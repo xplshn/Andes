@@ -5,13 +5,13 @@
 export BASE16_THEME=tube-amber
 
 color00="3C/28/0A" # Base 00 - Black
-color01="E6/87/00" # Base 08 - Red
+color01="F6/87/00" # Base 08 - Red
 color02="F5/95/00" # Base 0B - Green
 color03="F5/A0/00" # Base 0A - Yellow
 color04="F5/8A/00" # Base 0D - Blue
 color05="F5/7F/00" # Base 0E - Magenta
 color06="F5/5E/00" # Base 0C - Cyan
-color07="F5/CC/00" # Base 05 - White
+color07="F5/AC/0A" # Base 05 - White
 color08="F5/D7/00" # Base 03 - Bright Black
 color09=$color01 # Base 08 - Bright Red
 color10=$color02 # Base 0B - Bright Green
