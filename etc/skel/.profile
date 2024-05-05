@@ -30,7 +30,8 @@ export USE_BULKLIBS=0 # If set to one: Makes bundles BULK their libraries to a d
 # Go options:
 export CGO_ENABLED=0
 export GOFLAGS="-ldflags=-static -ldflags=-s -ldflags=-w"
-export GOROOT="/usr/local/go"
+export GO_LDFLAGS="-buildmode=pie"
+#export GOROOT="/usr/local/go"
 export GOCACHE="$HOME/.cache/go"
 export GOBIN="$HOME/.local/bin"
 export GOPATH="$HOME/.cache/go"
@@ -41,5 +42,5 @@ export RUSTFLAGS="-C link-arg=-s"
 export RUSTUP_HOME="$HOME/.cache/rs_rustup"
 export CARGO_HOME="$HOME/.cache/rs_cargo"
 # C options:
-#export LDFLAGS="-static"
+#export LDFLAGS="-static" # Only for binaries
 #export CFLAGS="-fPIE -fPIC -static"
