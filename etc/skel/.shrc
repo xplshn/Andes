@@ -1,31 +1,31 @@
-# .shrc $#############################
+# .shrc ##############################
 s() {
     export "$1=$2"
 }
 ###################################### This will set the shell's
   TMPF="sh_hist-$(date '+%s')"       # behaviour, use with care.
-  HISTFILE="/tmp/tmp_e$TMPF"         #   --Your lovely sysadmin.
+  HISTFILE="/tmp/tmp_e$TMPF"         #   --xplshn at github.com/Andes
 s xHISTFILE "$HISTFILE"              ####################################
   [ -f "$HOME/.local/bin/.std.h.sh" ] && . "$HOME/.local/bin/.std.h.sh" #
-[ "$MINPS1" = "0" ] && HOSTNAME="@$(hostname) " || HOSTNAME=""          #
+[ "$MINPS1" = "0" ] && HOSTNAME="@$(hostname)" || HOSTNAME=""           #
 [ "$MINPS1" = "0" ] && PS1USER="$USER" || PS1USER=""                    #
 #########################################################################
 
 hpwd() {
     if [ "$PWD" = "$HOME" ]; then
         if [ -n "$COOLHOME" ]; then
-            printf "$COOLHOME"
+            printf "%s\n" "$COOLHOME"
         else
-            printf "~"  # Display '~' if in home directory
+            printf "~\n"  # Display '~' if in home directory
         fi
-    elif [ "${PWD#$HOME/}" != "$PWD" ]; then
+    elif [ "${PWD#"$HOME"/}" != "$PWD" ]; then
         if [ -n "$COOLHOME_DEPTH" ]; then
-            printf "$COOLHOME_DEPTH/${PWD#$HOME/} "  # Display 'COOLHOME_DEPTH/...' for directories inside home
+            printf "%s/%s\n" "$COOLHOME_DEPTH" "${PWD#"$HOME"/}" # Display 'COOLHOME_DEPTH/...' for directories inside home
         else
-            printf "~/${PWD#$HOME/} "  # Display '~/...' for directories inside home if COOLHOME_DEPTH is not set
+            printf "%s%s\n" "~/" "${PWD#"$HOME"/}" # Display '~/...' for directories inside home if COOLHOME_DEPTH is not set
         fi
     else
-        printf "$PWD "  # Display the full path if outside home
+        printf "%s\n" "$PWD" # Display the full path if outside home
     fi
 }
 
@@ -36,51 +36,71 @@ set_prompt() {
 
 base16_loader() {
         # Base16 Shell
-        BASE16_SHELL="$HOME/.config/base16-shell"
+        BASE16_SHELL="$HOME/.config/base16-shell/"
         [ -n "$PS1" ] &&
                 [ -f "$BASE16_SHELL/profile_helper.sh" ] && command -v bash >/dev/null 2>&1 && "$BASE16_SHELL/profile_helper.sh"
 }
 
 topused() {
-    cat .sh_history | grep -v -e '^#' -e '^ ' -e '^./' -e '^#@_\\' -e '^@/-_' | awk '{print $1}' | sort | uniq -c | sort -nr | head -30
+    grep -v -e '^#' -e '^ ' -e '^./' -e '^#@_\\' -e '^@/-_' <~/.sh_history | awk '{print $1}' | sort | uniq -c | sort -nr | head -30
 }
 
 alias_loader() {
         alias ls='ls --color=auto'
         alias c='clear'
-        alias cx='exit'
         alias wttr='wttr $LOCATION' # Set your $LOCATION in ~/.profile
-    	alias anone='exit'
         alias e='cleanup ; exit'
-        alias exit='cleanup ; exit'
         alias iambecome='/usr/bin/doas su'
         #### Convenience: #############
-    	#alias '%'='doas'
+        #alias '%'='doas'
         alias rsl='pv -qL 100'
-    	alias '.,'='ls --color=auto -F'
-    	alias ',.'='ls --color=auto -FA'
-        ###############################
+        alias '.,'='ls --color=auto -F'
+        alias ',.'='ls --color=auto -FA'
+        #### Online:      #############
         alias myip='curl -SsL https://ipinfo.io/ip && printf "\n"'
         alias glbl_status='curl -SsL https://status.plaintext.sh/t'
         alias fortune-online='curl -SsL https://icanhazdadjoke.com | cowsay'
+        ###############################
 }
 
 load_profile() {
 if [ -r "$HOME/.profile" ]; then
+    oPATH="$PATH"
     PATH=""
     . /etc/profile
         . "$HOME/.profile"
+        #if command pelf_linker >/dev/null 2>&1;then
+         #       . "$HOME/.local/bin/pelf_linker" --export
+         #           LD_LIBRARY_PATH="$PELF_LIBDIRS"
+         #           PATH="$PELF_BINDIRS:$PATH"
+        #fi
 fi
 }
 
 show_weatherInfo() {
-	if available wttr; then
-    	if [ -z "$WTTR_SHOWN" ]; then
-        	if ping -q -c 1 -W 1 wttr.in >/dev/null 2>&1; then
-            	wttr "$LOCATION"
-            	export WTTR_SHOWN=1
-        	fi
-    	fi
+    if [ -z "$WTTR_SHOWN" ]; then
+      if command -v wttr; then
+          if ping -q -c 1 -W 1 wttr.in >/dev/null 2>&1; then
+              wttr "$LOCATION"
+              export WTTR_SHOWN=1
+          fi
+      fi
+    fi
+}
+
+start_GSession() {
+    if [ -z "$ENABLE_GUI" ] && [ "$(tty)" = "/dev/tty6" ]; then
+        if command -v startx >/dev/null 2>&1; then
+            read -rp "Do you want to start a graphical session? [X] " answer
+            case "$answer" in
+                y|yes)
+                    ENABLE_GUI=1 startx
+                    ;;
+                *)
+                    echo "Graphical session not started."
+                    ;;
+            esac
+        fi
     fi
 }
 
@@ -90,8 +110,10 @@ cleanup() {
     rm "$HISTFILE" 2>/dev/null
 }
 
-load_profile
+#load_profile
 set_prompt
 alias_loader
-show_weatherInfo
-base16_loader
+start_GSession
+#base16_loader
+#show_weatherInfo
+#britto # Birthday reminder, at https://github.com/xplshn/britto
