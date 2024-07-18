@@ -11,7 +11,7 @@ export XDG_CONFIG_DIRS="$HOME/.config"
 export PATH="$PATH:$HOME/.local/bin:$HOME/Programs" # Add ":$HOME/.local/share/flatpak/exports/bin" if you have flatpak
 
 # User prefferences:
-export MINPS1="0" # Whether to show your "$HOSTNAME" in your "$PS1", this var is used by .shrc
+export MINPS1="1" # Whether to show your "$HOSTNAME" in your "$PS1", this var is used by .shrc
 export LOCATION="Buenos_Aires" # The location used by WTTR, this var is referenced by .shrc
 export COOLHOME="]" # The indicator used with hpwd to indicate that the dir you in "$HOME"
 export COOLHOME_DEPTH="$COOLHOME~" # The indicator used with hpwd to indicate that the dir you are in is at "$HOME" or a subdirectory of "$HOME"
