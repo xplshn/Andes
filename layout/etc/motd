@@ -1,0 +1,12 @@
+Welcome to Andes!
+Andes is a set of customizations applied on top of Alpine Linux to make it more appealing to Unix nerds.
+Andes grows with each passing day, contributions are welcome! We are currently hosted at <https://github.com/xplshn/andes>
+
+The Alpine Wiki contains a large amount of how-to guides and general
+information about administrating Alpine-based systems.
+See <https://wiki.alpinelinux.org/>.
+
+You can setup the system with the command: setup-alpine
+
+You may change this message by editing /etc/motd. You may also remove it.
+
