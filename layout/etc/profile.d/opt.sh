@@ -23,10 +23,12 @@ add_dir_to_manpath() {
 }
 
 add_dir_to_ldpath() {
-    LDSOCFG_FILE="/etc/ld.so.conf"
-    if [ -d "$1" ]; then
-        echo "$1" >> "$LDSOCFG_FILE"
-    fi
+	[ "$(id -u)" -eq 0 ] && {
+    	LDSOCFG_FILE="/etc/ld.so.conf"
+    	if [ -d "$1" ]; then
+    	    echo "$1" >> "$LDSOCFG_FILE"
+    	fi
+    }
 }
 
 # Add these to your PATH if they exist             # =-----------=
