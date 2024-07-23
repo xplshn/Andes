@@ -69,25 +69,25 @@ palette() {
 # Function to log to stdout with optional color
 log() {
     # Default color (no color)
-    local color_code=""
-    local reset="\033[m"
+    _ashstd_color_code=""
+    _ashstd_reset="\033[m"
 
     # Check if the first argument is --color
     if [ "$1" = "--color" ]; then
         # Get the color code or ANSI code from the second argument
         case "$2" in
-            RED) color_code="\033[31m" ;;
-            YELLOW) color_code="\033[33m" ;;
-            BLUE) color_code="\033[34m" ;;
-            GREEN) color_code="\033[32m" ;;
-            *) color_code="$2" ;;  # Treat the second argument as an ANSI code
+            RED) _ashstd_color_code="\033[31m" ;;
+            YELLOW) _ashstd_color_code="\033[33m" ;;
+            BLUE) _ashstd_color_code="\033[34m" ;;
+            GREEN) _ashstd_color_code="\033[32m" ;;
+            *) _ashstd_color_code="$2" ;;  # Treat the second argument as an ANSI code
         esac
         # Shift past the --color argument and color argument
         shift 2
     fi
 
     # Print the message with or without color
-    printf "${color_code}->${reset} %s\n" "$*"
+    printf "${_ashstd_color_code}->${_ashstd_reset} %s\n" "$*"
 }
 
 # Function to log errors in red and exit immediately

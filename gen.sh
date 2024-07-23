@@ -1,11 +1,12 @@
 #!/bin/sh
 
-# shellcheck disable=SC1091 #-------------|
-# We intend to load std.sh this way. -----|
-# Load the Andes SH library --------------|
-[ -f "./layout/etc/profile.d/std.sh" ] &&
-	. ./layout/etc/profile.d/std.sh
-# ----------------------------------------|
+# shellcheck disable=SC1091 #--------------------------------------------------------------------|
+# We intend to load std.sh this way. ------------------------------------------------------------|
+# Load the Andes SH library ---------------------------------------------------------------------|
+[ -f "./layout/etc/profile.d/std.sh" ] && {
+	. ./layout/etc/profile.d/std.sh || log_error "We cannot proceed without the Andes SH library"
+	}
+# -----------------------------------------------------------------------------------------------|
 
 # Define directories
 xROOTFS="./outfs"
@@ -74,9 +75,11 @@ add_bigdl() {
 
 # Main() defines the correct order of all the steps. That's all a main() function should do.
 main() {
-	log --color "GREEN" 'Entering step: "Prepare to build Go packages"' && {
-		prepare || log_leveled --level 3 log --color "RED" 'Failed at step: "Prepare to build Go packages" (!prepare)'
-	}
+	if available apk && ! available go; then
+		log --color "GREEN" 'Entering step: "Prepare to build Go packages"' && {
+			prepare || log_leveled --level 3 log --color "RED" 'Failed at step: "Prepare to build Go packages" (!prepare)'
+		}
+	fi
 	log_leveled --level 3 log --color "GREEN" 'Entering step: "Build Go Packages"' && {
 		update_and_build || log_leveled --level 6 log_error 'Failed at step: "Build Go Packages" (!update_and_build)'
 	}
@@ -89,10 +92,12 @@ main() {
 	log --color "GREEN" 'Entering step: "Add the latest release of the Bigdl distribution system"' && {
 		add_bigdl || log_leveled --level 3 log_error 'Failed at step: "Add the latest release of the Bigdl distribution system" (!add_bigdl)'
 	}
-	log --color "GREEN" 'Entering step: "Finalize system build process"' && {
-		prepare || log_leveled --level 3 log_error 'Failed at step: "Finalize system build process" (!prepare)'
-	}
-	log --color "GREEN" "The ROOTFS has been prepared. Going back into ./mkimg.sh"
+	if available apk && require go; then
+		log --color "GREEN" 'Entering step: "Finalize system build process"' && {
+			prepare || log_leveled --level 3 log_error 'Failed at step: "Finalize system build process" (!prepare)'
+		}
+	fi
+	log --color "GREEN" "The ROOTFS has been prepared"
 	unset xROOTFS REPO_DIR BUILD_DIR BIN USR_BIN
 }
 main
