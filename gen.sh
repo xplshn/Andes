@@ -28,7 +28,10 @@ prepare() {
 update_and_build() {
 	if [ -d "$REPO_DIR" ]; then
 		cd "$REPO_DIR" || exit 1
-		git pull && sh ./build.sh
+		git pull && {
+			sh ./build.sh deps
+			sh ./build.sh
+		}
 		cd - || exit 1
 	else
 		git clone https://github.com/xplshn/a-utils "$REPO_DIR"

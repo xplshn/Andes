@@ -5,6 +5,20 @@
 
 # shellcheck disable=SC2148 # We don't need a shebang. This script is loaded into running shells
 
+# Check if the shell is interative or not
+is_interactive_shell() {
+    case $- in
+        *i*) return 0 ;;  # Interactive shell
+        *) return 1 ;;    # Non-interactive shell
+    esac
+}
+
+nexit(){
+    if ! is_interactive_shell; then
+        exit 1
+    fi
+}
+
 # Display a spinner loader with the colors declared(or not!) in the COOLSPINNERCOLOR variable
 spinner() {
 	if [ -z "$COOLSPINNER" ]; then
@@ -21,7 +35,7 @@ spinner() {
 	fi
 
 	len=$(printf "%s" "$COOLSPINNER" | wc -c | awk '{print $1}')
-	trap 'printf "\033[?25h"; exit' INT
+	trap 'printf "\033[?25h"; nexit' INT
 
 	while true; do
 		i=1
@@ -48,7 +62,7 @@ available() {
 	unnappear which "$1" || return 1
 }
 
-# Exit if a dependency is not available
+# exit if a dependency is not available
 require() {
     available "$1" || log_error "[$1] is not installed. Please ensure the command is available [$1] and try again."
 }
@@ -93,7 +107,7 @@ log() {
 # Function to log errors in red and exit immediately
 log_error() {
     log --color RED "$*"
-    exit 1
+    nexit 1
 }
 
 # Function to log messages with leveled indentation

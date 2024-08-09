@@ -23,27 +23,30 @@ add_dir_to_manpath() {
 }
 
 add_dir_to_ldpath() {
-	[ "$(id -u)" -eq 0 ] && {
-    	LDSOCFG_FILE="/etc/ld.so.conf"
-    	if [ -d "$1" ]; then
-    	    echo "$1" >> "$LDSOCFG_FILE"
-    	fi
-    }
+	if [ -d "$1" ]; then
+		if [ -z "$LD_LIBRARY_PATH" ]; then
+			LD_LIBRARY_PATH="$1"
+		else
+			LD_LIBRARY_PATH="$1:$LD_LIBRARY_PATH"
+		fi
+    fi
 }
 
-# Add these to your PATH if they exist             # =-----------=
-SUPERSEDE=1; add_dir_to_path /opt/andes/poly/bin   # Priority N. 1
-SUPERSEDE=1; add_dir_to_path /opt/andes/usr/bin    # Priority N. 2
-SUPERSEDE=1; add_dir_to_path /opt/andes/bin        # Priority N. 3
-SUPERSEDE=0; add_dir_to_path /opt/bigdl/usr/bin    # Priority N. L
-# Add these to your LD_LIBRARY_PATH if they exist  # =-----------=
-add_dir_to_ldpath /opt/andes/poly/lib              # Priority N. 1
-add_dir_to_ldpath /opt/andes/usr/lib               # Priority N. 2
-add_dir_to_ldpath /opt/andes/lib                   # Priority N. 3
-# Add these to your MANPATH if they exist          # =-----------=
-add_dir_to_manpath /opt/andes/poly/usr/share/man   # Priority N. 1
-add_dir_to_manpath /opt/andes/usr/share/man        # Priority N. 2
-add_dir_to_manpath /usr/local/share/man            # Priority N. 3
-add_dir_to_manpath /usr/share/man                  # Priority N. 4
-#                                                  # =-----------=
+# Add these to your PATH if they exist                 # =-----------=
+SUPERSEDE=1; add_dir_to_path /opt/andes/poly/bin       # Priority N. 1
+SUPERSEDE=1; add_dir_to_path /opt/andes/usr/bin        # Priority N. 2
+SUPERSEDE=1; add_dir_to_path /opt/andes/bin            # Priority N. 3
+SUPERSEDE=0; add_dir_to_path /opt/bigdl/usr/bin        # Priority N. L
+SUPERSEDE=0; add_dir_to_path /opt/toolchains/go/bin    # Priority N. L
+SUPERSEDE=0; add_dir_to_path /opt/toolchains/zig/bin   # Priority N. L
+# Add these to your LD_LIBRARY_PATH if they exist      # =-----------=
+add_dir_to_ldpath /opt/andes/poly/lib                  # Priority N. 1
+add_dir_to_ldpath /opt/andes/usr/lib                   # Priority N. 2
+add_dir_to_ldpath /opt/andes/lib                       # Priority N. 3
+# Add these to your MANPATH if they exist              # =-----------=
+add_dir_to_manpath /opt/andes/poly/usr/share/man       # Priority N. 1
+add_dir_to_manpath /opt/andes/usr/share/man            # Priority N. 2
+add_dir_to_manpath /usr/local/share/man                # Priority N. 3
+add_dir_to_manpath /usr/share/man                      # Priority N. 4
+#                                                      # =-----------=
 export FORTUNE_PATH="/opt/andes/usr/share/fortunes"

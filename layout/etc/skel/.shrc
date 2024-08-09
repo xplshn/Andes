@@ -2,8 +2,8 @@
 s() {
     export "$1=$2"
 }
-###################################### This will set the shell's
-  TMPF="sh_hist-$(date '+%s')"       # behaviour, use with care.
+###################################### This will set the shell's behaviour.
+  TMPF="sh_hist-$(date '+%s')"       #  Your lovely sysadmin
   HISTFILE="/tmp/tmp_e$TMPF"         #   --xplshn at github.com/xplshn/Andes
 s xHISTFILE "$HISTFILE"              #######################################
   [ -f "/etc/profile.d/std.sh" ] && . "/etc/profile.d/std.sh"              #
@@ -32,6 +32,17 @@ hpwd() {
 set_prompt() {
     PS1='$PS1USER$HOSTNAME$(hpwd)'
     [ "$(id -u)" -eq 0 ] && PS1="${PS1}λ " || PS1="${PS1}@ "
+}
+
+hide_ps1() {
+	if [ "$PS1" != "" ];then
+		oPS1="$PS1"
+		PS1=""
+		printf "\x1B[?25l"
+	else
+		PS1="$oPS1"
+		printf "\x1B[?25h"
+	fi
 }
 
 base16_loader() {
@@ -70,7 +81,7 @@ if [ -r "$HOME/.profile" ]; then
     . /etc/profile
         . "$HOME/.profile"
         #if command pelf_linker >/dev/null 2>&1;then
-         #       . "$HOME/.local/bin/pelf_linker" --export
+         #       . "$(command -v pelf_linker)" --export
          #           LD_LIBRARY_PATH="$PELF_LIBDIRS"
          #           PATH="$PELF_BINDIRS:$PATH"
         #fi
@@ -79,22 +90,23 @@ fi
 
 show_weatherInfo() {
     if [ -z "$WTTR_SHOWN" ]; then
-      if command -v wttr; then
+      if command -v wttr >/dev/null 2>&1; then
           if ping -q -c 1 -W 1 wttr.in >/dev/null 2>&1; then
-              wttr "$LOCATION"
-              export WTTR_SHOWN=1
+              wttr --location "$LOCATION"
+              WTTR_SHOWN=1
           fi
       fi
     fi
 }
 
 start_GSession() {
-    if [ -z "$ENABLE_GUI" ] && [ "$(tty)" = "/dev/tty6" ]; then
-        if command -v startx >/dev/null 2>&1; then
-            read -rp "Do you want to start a graphical session? [X] " answer
+    CMD_START_GUI_SESSION="startx"
+    if [ -z "$ENABLE_GUI" ] && [ "$(tty)" = "/dev/tty6" ] || [ REGARDLESS = 1 ] ; then
+        if command -v "$CMD_START_GUI_SESSION" >/dev/null 2>&1; then
+            read -rp "Do you want to start a graphical session? [$CMD_START_GUI_SESSION] " answer
             case "$answer" in
                 y|yes)
-                    ENABLE_GUI=1 startx
+                    ENABLE_GUI=1 $CMD_START_GUI_SESSION
                     ;;
                 *)
                     echo "Graphical session not started."
