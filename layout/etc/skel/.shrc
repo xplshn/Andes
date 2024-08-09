@@ -4,12 +4,12 @@ s() {
 }
 ###################################### This will set the shell's
   TMPF="sh_hist-$(date '+%s')"       # behaviour, use with care.
-  HISTFILE="/tmp/tmp_e$TMPF"         #   --xplshn at github.com/Andes
-s xHISTFILE "$HISTFILE"              ####################################
-  [ -f "/etc/profile.d/std.sh" ] && . "/etc/profile.d/std.sh"           #
-[ "$MINPS1" = "0" ] && HOSTNAME="@$(hostname)" || HOSTNAME=""           #
-[ "$MINPS1" = "0" ] && PS1USER="$USER" || PS1USER=""                    #
-#########################################################################
+  HISTFILE="/tmp/tmp_e$TMPF"         #   --xplshn at github.com/xplshn/Andes
+s xHISTFILE "$HISTFILE"              #######################################
+  [ -f "/etc/profile.d/std.sh" ] && . "/etc/profile.d/std.sh"              #
+[ "$MINPS1" = "0" ] && HOSTNAME="@$(hostname)" || HOSTNAME=""              #
+[ "$MINPS1" = "0" ] && PS1USER="$USER" || PS1USER=""                       #
+############################################################################
 
 hpwd() {
     if [ "$PWD" = "$HOME" ]; then
